@@ -45,7 +45,7 @@ public class Cube : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Plane>())
+        if (collision.gameObject.TryGetComponent<Plane>(out _))
         {
             if (IsTouch == false)
             {

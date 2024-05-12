@@ -11,7 +11,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private int _poolMaxSize = 10;
 
     private ObjectPool<GameObject> _pool;
-    private List<GameObject> _cubes = new List<GameObject>();
+    private List<Cube> _cubes = new List<Cube>();
 
     private void OnDisable()
     {
@@ -19,7 +19,7 @@ public class Spawner : MonoBehaviour
         {
             if (cube != null)
             {
-                cube.GetComponent<Cube>().CollisionDetected -= ReleaseObject;
+                cube.CollisionDetected -= ReleaseObject;
             }
         }
     }
@@ -58,18 +58,18 @@ public class Spawner : MonoBehaviour
 
     private void GetCube()
     {
-        var cube = _pool.Get();
+        var cube = _pool.Get().GetComponent<Cube>();
+        cube.CollisionDetected += ReleaseObject;
         _cubes.Add(cube);
-        cube.GetComponent<Cube>().CollisionDetected += ReleaseObject;
     }
 
     private void ReleaseObject()
     {
         foreach (var cube in _cubes)
         {
-            if (cube.GetComponent<Cube>().CanRelease)
+            if (cube.CanRelease)
             {
-                _pool.Release(cube);
+                _pool.Release(cube.gameObject);
             }
         }
     }
